@@ -20,6 +20,8 @@
   "devDependencies": {
     "code": "^2.0.1",
     "codecov": "^1.0.1",
+    "eslint-config-hapi": "^8.0.0",
+    "eslint-plugin-hapi": "^4.0.0",
     "lab": "^7.3.0",
     "nock": "^3.3.2",
     "nodemon": "^1.8.1",

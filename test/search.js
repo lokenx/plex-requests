@@ -17,6 +17,16 @@ describe('/search', () => {
 
     it('returns array of movies', (done) => {
 
+        Nock('https://api.themoviedb.org')
+            .filteringPath(/.*/, 'query')
+            .get('query')
+            .reply(200, {
+                results: [
+                    { movie: 1 },
+                    { movie: 2 }
+                ]
+            });
+
         App.init(internals.manifest, internals.composeOptions, (err, server) => {
 
             expect(err).to.not.exist();
@@ -26,6 +36,7 @@ describe('/search', () => {
                 expect(res.statusCode).to.equal(200);
                 expect(res.result.results).to.be.an.array();
 
+                Nock.cleanAll();
                 server.stop(done);
             });
         });
@@ -63,6 +74,7 @@ describe('/search', () => {
 
                 expect(res.statusCode).to.equal(400);
 
+                Nock.cleanAll();
                 server.stop(done);
             });
         });

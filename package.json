@@ -1,0 +1,34 @@
+{
+    "name": "plex-requests",
+    "version": "0.1.0",
+    "description": "",
+    "main": "lib/index.js",
+    "dependencies": {
+        "boom": "^3.0.0",
+        "confidence": "^1.4.2",
+        "glue": "^2.4.0",
+        "good": "^6.4.0",
+        "good-console": "^5.2.0",
+        "good-file": "^5.1.1",
+        "hapi": "^11.1.2",
+        "hapi-auth-jwt2": "^5.2.1",
+        "jsonwebtoken": "^5.4.1",
+        "moviedb": "^0.2.2"
+    },
+    "devDependencies": {
+        "lab": "^7.3.0",
+        "code": "^2.0.1",
+        "nock": "^3.3.2",
+        "nodemon": "^1.8.1",
+        "rewire": "^2.5.1",
+        "shot": "^2.0.1"
+    },
+    "scripts": {
+        "start": "node_modules/.bin/nodemon lib/start.js",
+        "test": "node node_modules/lab/bin/lab -a code -t 100 -L -v",
+        "coverage": "node node_modules/lab/bin/lab -a code -r html -L -o coverage/coverage.html -r lcov -o coverage/lcov.info"
+    },
+    "keywords": [],
+    "author": "Mikhail Delport",
+    "license": "MIT"
+}

@@ -12,6 +12,7 @@
     "good-file": "^5.1.1",
     "hapi": "^11.1.2",
     "hapi-auth-jwt2": "^5.2.1",
+    "hoek": "^3.0.4",
     "jsonwebtoken": "^5.4.1",
     "moviedb": "^0.2.2",
     "needle": "^0.11.0",

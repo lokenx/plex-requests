@@ -1,18 +1,12 @@
 'use strict';
 
-// Load modules
-
 const Code = require('code');
 const Lab = require('lab');
 const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
 
-// Declare internals
-
 const internals = {};
-
-// Test shortcuts
 
 const lab = exports.lab = Lab.script();
 const describe = lab.experiment;

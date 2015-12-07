@@ -5,6 +5,8 @@ const Lab = require('lab');
 const Rewire = require('rewire');
 const Authentication = Rewire('../lib/plugins/authentication');
 const Users = require('../lib/plugins/authentication/users').module;
+const Nock = require('nock');
+const Settings = require('../config/settings.json');
 
 const internals = {};
 const validate = Authentication.__get__('validate');
@@ -58,6 +60,113 @@ describe('/authentication', () => {
             if (err) {
                 throw new Error(err.message);
             }
+            done();
+        });
+    });
+
+    it('successfully login with new Plex account', (done) => {
+
+        Nock('https://plex.tv')
+            .post('/users/sign_in.json')
+            .reply(201, {
+                user: { email: 'test1' }
+            });
+
+        Nock('https://plex.tv/')
+            .get('/pms/friends/all?X-Plex-Token=' + Settings.authentication.plextoken)
+            .reply(200, {
+                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
+                }
+            });
+
+        Nock('https://plex.tv/')
+            .get('/users/account?X-Plex-Token=' + Settings.authentication.plextoken)
+            .reply(200, {
+                user: { username: 'test0' }
+            });
+
+        Authentication.login('test1:test1', (err, res) => {
+
+            expect(err).to.not.exist();
+            expect(res).to.be.a.string();
+            Nock.cleanAll();
+            done();
+        });
+    });
+
+    after((done) => {
+
+        Users.remove({ username: 'test1' }, (err, doc) => {
+
+            if (err) {
+                throw new Error(err.message);
+            }
+            done();
+        });
+    });
+
+    it('handles login failure with Plex', (done) => {
+
+        Nock('https://plex.tv')
+            .post('/users/sign_in.json')
+            .replyWithError('Something fake awful happened');
+
+        Authentication.login('test2:test2', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            Nock.cleanAll();
+            done();
+        });
+    });
+
+    it('handles login verification failure with Plex', (done) => {
+
+        Nock('https://plex.tv')
+            .post('/users/sign_in.json')
+            .reply(201, {
+                user: { email: 'test1' }
+            });
+
+        Nock('https://plex.tv/')
+            .get('/pms/friends/all?X-Plex-Token=' + Settings.authentication.plextoken)
+            .replyWithError('Something fake awful happened');
+
+        Authentication.login('test2:test2', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            Nock.cleanAll();
+            done();
+        });
+    });
+
+    it('handles login verification failure with Plex due to invalid username', (done) => {
+
+        Nock('https://plex.tv')
+            .post('/users/sign_in.json')
+            .reply(201, {
+                user: { email: 'test1' }
+            });
+
+        Nock('https://plex.tv/')
+            .get('/pms/friends/all?X-Plex-Token=' + Settings.authentication.plextoken)
+            .reply(200, {
+                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
+                }
+            });
+
+        Nock('https://plex.tv/')
+            .get('/users/account?X-Plex-Token=' + Settings.authentication.plextoken)
+            .reply(200, {
+                user: { username: 'test0' }
+            });
+
+        Authentication.login('test4:test4', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            Nock.cleanAll();
             done();
         });
     });

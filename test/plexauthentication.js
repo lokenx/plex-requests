@@ -18,41 +18,6 @@ const it = lab.test;
 
 describe('/plexauthentication', () => {
 
-    it('returns list of friends', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .reply(200, {
-                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
-                }
-            });
-
-        PlexGetFriends((err, res) => {
-
-            expect(err).to.not.exist();
-            expect(res).to.be.an.array();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('handles error when getting friends', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .replyWithError('Something fake awful happened');
-
-        PlexGetFriends((err, res) => {
-
-            expect(err).to.exist();
-            expect(res).to.not.exist();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
     it('handles response error when getting friends', (done) => {
 
         Nock('https://plex.tv')
@@ -71,24 +36,6 @@ describe('/plexauthentication', () => {
         });
     });
 
-    it('returns admin user', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .reply(200, {
-                user: { username: 'test1' }
-            });
-
-        PlexGetAdmin((err, res) => {
-
-            expect(err).to.not.exist();
-            expect(res).to.be.an.string();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
     it('handles error when getting admin user', (done) => {
 
         Nock('https://plex.tv')
@@ -97,58 +44,6 @@ describe('/plexauthentication', () => {
             .replyWithError('Something fake awful happened');
 
         PlexGetAdmin((err, res) => {
-
-            expect(err).to.exist();
-            expect(res).to.not.exist();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('handles response error when getting admin user', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .reply(401, {
-                errors: { error: 'Something fake awful happened' }
-            });
-
-        PlexGetAdmin((err, res) => {
-
-            expect(err).to.exist();
-            expect(res).to.not.exist();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('checks user plex login', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .post('query')
-            .reply(201, {
-                user: { email: 'test1' }
-            });
-
-        Plex.checkPlexLogin('auth', (err, res) => {
-
-            expect(err).to.not.exist();
-            expect(res).to.be.an.string();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('handles error when getting admin user', (done) => {
-
-        Nock('https://plex.tv')
-            .filteringPath(/.*/, 'query')
-            .post('query')
-            .replyWithError('Something fake awful happened');
-
-        Plex.checkPlexLogin('auth', (err, res) => {
 
             expect(err).to.exist();
             expect(res).to.not.exist();
@@ -170,30 +65,6 @@ describe('/plexauthentication', () => {
 
             expect(err).to.exist();
             expect(res).to.not.exist();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('verifies a valid plex user', (done) => {
-
-        Nock('https://plex.tv/')
-            .get('/pms/friends/all?X-Plex-Token=' + Settings.authentication.plextoken)
-            .reply(200, {
-                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
-                }
-            });
-
-        Nock('https://plex.tv/')
-            .get('/users/account?X-Plex-Token=' + Settings.authentication.plextoken)
-            .reply(200, {
-                user: { username: 'test0' }
-            });
-
-        Plex.verifyPlexUser('test1', (err, res) => {
-
-            expect(err).to.not.exist();
-            expect(res).to.be.true();
             Nock.cleanAll();
             done();
         });
@@ -241,30 +112,6 @@ describe('/plexauthentication', () => {
 
             expect(err).to.exist();
             expect(res).to.not.exist();
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('denies an invalid plex user', (done) => {
-
-        Nock('https://plex.tv/')
-            .get('/pms/friends/all?X-Plex-Token=' + Settings.authentication.plextoken)
-            .reply(200, {
-                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
-                }
-            });
-
-        Nock('https://plex.tv/')
-            .get('/users/account?X-Plex-Token=' + Settings.authentication.plextoken)
-            .reply(200, {
-                user: { username: 'test0' }
-            });
-
-        Plex.verifyPlexUser('test4', (err, res) => {
-
-            expect(err).to.not.exist();
-            expect(res).to.be.false();
             Nock.cleanAll();
             done();
         });

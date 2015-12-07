@@ -9,6 +9,7 @@ const Users = require('../lib/plugins/authentication/users').module;
 const internals = {};
 const validate = Authentication.__get__('validate');
 const generatetoken = Authentication.__get__('generatetoken');
+// const checkPassword = Authentication.__get__('checkPassword');
 const Bcrypt = Authentication.__get__('Bcrypt');
 const UsersInternal = Authentication.__get__('Users');
 
@@ -30,6 +31,26 @@ describe('/authentication', () => {
         });
     });
 
+    it('successfully login to created user account', (done) => {
+
+        Authentication.login('testadminuser:testadminuser', (err, res) => {
+
+            expect(err).to.not.exist();
+            expect(res).to.be.a.string();
+            done();
+        });
+    });
+
+    it('handles logging in with wrong password', (done) => {
+
+        Authentication.login('testadminuser:testadminuser2', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            done();
+        });
+    });
+
     after((done) => {
 
         Users.remove({ username: 'testadminuser' }, (err, doc) => {
@@ -37,6 +58,16 @@ describe('/authentication', () => {
             if (err) {
                 throw new Error(err.message);
             }
+            done();
+        });
+    });
+
+    it('handles login with incorrect credential formatting', (done) => {
+
+        Authentication.login('testadminuser.testadminuser', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
             done();
         });
     });
@@ -160,6 +191,45 @@ describe('/authentication', () => {
         };
 
         generatetoken('testadminuser', 'testadminuser', false, (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            done();
+        });
+    });
+
+    it('handles login database search error', (done) => {
+
+        Authentication.login('testadminuser:testadminuser', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            done();
+        });
+    });
+
+    it('handles login check password error', (done) => {
+
+        UsersInternal.findOne = (document, callback) => {
+
+            return callback(null, { password: 'testadminuser' });
+        };
+        Authentication.login('testadminuser:testadminuser', (err, res) => {
+
+            expect(err).to.exist();
+            expect(res).to.not.exist();
+            done();
+        });
+    });
+
+    it('handles login generate token error', (done) => {
+
+        Bcrypt.compare = (decoded, password, callback) => {
+
+            return callback(null, true);
+        };
+
+        Authentication.login('testadminuser:testadminuser', (err, res) => {
 
             expect(err).to.exist();
             expect(res).to.not.exist();

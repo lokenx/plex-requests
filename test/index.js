@@ -14,7 +14,7 @@ const describe = lab.describe;
 const it = lab.it;
 const expect = Code.expect;
 
-describe('index', () => {
+describe('/index', () => {
 
     it('starts server and returns hapi server object', (done) => {
 

@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "boom": "^3.0.0",
     "confidence": "^1.4.2",
     "glue": "^2.4.0",
@@ -14,6 +15,8 @@
     "hapi-auth-jwt2": "^5.2.1",
     "hoek": "^3.0.4",
     "jsonwebtoken": "^5.4.1",
+    "leveldown": "^1.4.2",
+    "linvodb3": "^3.11.2",
     "moviedb": "^0.2.2",
     "needle": "^0.11.0",
     "xml2js": "^0.4.15"

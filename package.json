@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "node_modules/.bin/nodemon lib/start.js",
-    "test": "node node_modules/lab/bin/lab -a code -t 100 -L -v",
+    "test": "node node_modules/lab/bin/lab -a code -t 90 -L -v",
     "coverage": "node node_modules/lab/bin/lab -a code -r html -L -o coverage/coverage.html -r lcov -o coverage/lcov.info",
     "codecov": "codecov"
   },

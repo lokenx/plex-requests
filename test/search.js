@@ -5,6 +5,10 @@ const Lab = require('lab');
 const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
+const Rewire = require('rewire');
+
+const Search = Rewire('../lib/plugins/search/search');
+const TVDB = Search.__get__('TVDB');
 
 const internals = {};
 
@@ -42,6 +46,32 @@ describe('/search', () => {
         });
     });
 
+    it('returns array of tv shows', (done) => {
+
+        Nock('https://api-beta.thetvdb.com')
+            .get('/search/series?name=the')
+            .reply(200, {
+                data: [
+                    { tv: 1 },
+                    { tv: 2 }
+                ]
+            });
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject('/api/v1/search/tv&query=the', (res) => {
+
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.array();
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('searches for incorrect media type', (done) => {
 
         App.init(internals.manifest, internals.composeOptions, (err, server) => {
@@ -57,7 +87,7 @@ describe('/search', () => {
         });
     });
 
-    it('returns error without API key', (done) => {
+    it('returns error without API key for movie searches', (done) => {
 
 
         Nock('https://api.themoviedb.org')
@@ -77,6 +107,44 @@ describe('/search', () => {
                 Nock.cleanAll();
                 server.stop(done);
             });
+        });
+    });
+
+    it('returns error with tv show search', (done) => {
+
+        Nock('https://api-beta.thetvdb.com')
+            .get('/search/series?name=the')
+            .replyWithError('Something fake awful happened');
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject('/api/v1/search/tv&query=the', (res) => {
+
+                expect(res.statusCode).to.equal(400);
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
+    it('returns TVDB token', (done) => {
+
+        Nock('https://api-beta.thetvdb.com')
+            .post('/login')
+            .reply(200, {
+                token: 'abcd1234'
+            });
+
+        TVDB.getToken((err, token) => {
+
+            expect(err).to.not.exist();
+            expect(token).to.be.an.string();
+
+            Nock.cleanAll();
+            done();
         });
     });
 });

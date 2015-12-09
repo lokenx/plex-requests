@@ -8,7 +8,7 @@ const Nock = require('nock');
 const Rewire = require('rewire');
 
 const Search = Rewire('../lib/plugins/search/search');
-const TVDB = Search.__get__('TVDB');
+const Init = Search.__get__('init');
 
 const internals = {};
 
@@ -138,10 +138,26 @@ describe('/search', () => {
                 token: 'abcd1234'
             });
 
-        TVDB.getToken((err, token) => {
+        Init((err, token) => {
 
             expect(err).to.not.exist();
             expect(token).to.be.an.string();
+
+            Nock.cleanAll();
+            done();
+        });
+    });
+
+    it('returns error getting TVDB token', (done) => {
+
+        Nock('https://api-beta.thetvdb.com')
+            .post('/login')
+            .replyWithError('Something fake awful happened');
+
+        Init((err, token) => {
+
+            expect(err).to.exist();
+            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();

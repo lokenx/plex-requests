@@ -5,6 +5,7 @@ const Lab = require('lab');
 const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
+const Users = require('../lib/plugins/authentication/users').module;
 const Rewire = require('rewire');
 
 const Search = Rewire('../lib/plugins/search/search');
@@ -16,10 +17,66 @@ const lab = exports.lab = Lab.script();
 const describe = lab.experiment;
 const expect = Code.expect;
 const it = lab.test;
+const before = lab.before;
+const after = lab.after;
 
 describe('/search', () => {
 
+    before((done) => {
+
+        const options = {
+            url: '/api/v1/login',
+            method: 'POST',
+            headers: {
+                Authorization: 'Basic dGVzdDE6dGVzdDE='
+            }
+        };
+
+        Nock('https://plex.tv')
+            .post('/users/sign_in.json')
+            .reply(201, {
+                user: { email: 'test1' }
+            });
+
+        Nock('https://plex.tv/')
+            .filteringPath(/\/pms\/friends\/all\?X-Plex-Token=.*/, 'url')
+            .get('url')
+            .reply(200, {
+                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
+                }
+            });
+
+        Nock('https://plex.tv/')
+            .filteringPath(/\/users\/account\?X-Plex-Token=.*/, 'url')
+            .get('url')
+            .reply(200, {
+                user: { username: 'test0' }
+            });
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                internals.token = res.result.token;
+                expect(res.statusCode).to.equal(200);
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('returns array of movies', (done) => {
+
+        const options = {
+            url: '/api/v1/search/movie&query=the',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
 
         Nock('https://api.themoviedb.org')
             .filteringPath(/.*/, 'query')
@@ -35,7 +92,7 @@ describe('/search', () => {
 
             expect(err).to.not.exist();
 
-            server.inject('/api/v1/search/movie&query=the', (res) => {
+            server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result.results).to.be.an.array();
@@ -47,6 +104,14 @@ describe('/search', () => {
     });
 
     it('returns array of tv shows', (done) => {
+
+        const options = {
+            url: '/api/v1/search/tv&query=the',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
 
         Nock('https://api-beta.thetvdb.com')
             .get('/search/series?name=the')
@@ -61,7 +126,7 @@ describe('/search', () => {
 
             expect(err).to.not.exist();
 
-            server.inject('/api/v1/search/tv&query=the', (res) => {
+            server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.array();
@@ -74,11 +139,19 @@ describe('/search', () => {
 
     it('searches for incorrect media type', (done) => {
 
+        const options = {
+            url: '/api/v1/search/sports&query=the',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
+
         App.init(internals.manifest, internals.composeOptions, (err, server) => {
 
             expect(err).to.not.exist();
 
-            server.inject('/api/v1/search/sports&query=the', (res) => {
+            server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(400);
 
@@ -89,6 +162,13 @@ describe('/search', () => {
 
     it('returns error without API key for movie searches', (done) => {
 
+        const options = {
+            url: '/api/v1/search/movie&query=the',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
 
         Nock('https://api.themoviedb.org')
             .filteringPath(/.*/, 'query')
@@ -100,7 +180,7 @@ describe('/search', () => {
 
             expect(err).to.not.exist();
 
-            server.inject('/api/v1/search/movie&query=the', (res) => {
+            server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(400);
 
@@ -112,6 +192,14 @@ describe('/search', () => {
 
     it('returns error with tv show search', (done) => {
 
+        const options = {
+            url: '/api/v1/search/tv&query=the',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
+
         Nock('https://api-beta.thetvdb.com')
             .get('/search/series?name=the')
             .replyWithError('Something fake awful happened');
@@ -120,7 +208,7 @@ describe('/search', () => {
 
             expect(err).to.not.exist();
 
-            server.inject('/api/v1/search/tv&query=the', (res) => {
+            server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(400);
 
@@ -163,6 +251,17 @@ describe('/search', () => {
             done();
         });
     });
+
+    after((done) => {
+
+        Users.remove({ username: 'test1' }, (err, doc) => {
+
+            if (err) {
+                throw new Error(err.message);
+            }
+            done();
+        });
+    });
 });
 
 internals.manifest = {
@@ -173,6 +272,8 @@ internals.manifest = {
         }
     ],
     plugins: {
+        'hapi-auth-jwt2': {},
+        './plugins/authentication': {},
         './plugins/search': {}
     }
 };

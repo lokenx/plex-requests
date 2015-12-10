@@ -1,5 +1,0 @@
-{
-    "name": "authentication",
-    "description": "JWT auth provider",
-    "version": "0.1.0"
-}

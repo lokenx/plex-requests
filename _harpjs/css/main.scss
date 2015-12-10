@@ -1,0 +1,24 @@
+@import "bourbon/bourbon";
+@import "base/base";
+@import "neat/neat";
+
+@import "variables";
+@import "typography";
+@import "navigation";
+@import "footer";
+@import "homepage";
+@import "gettingstarted";
+
+// Grid setup
+body {
+  margin: 0px;
+
+}
+
+div.container {
+  @include outer-container;
+
+  @include media($medium-screen-down) {
+    margin: 8px;
+  }
+}

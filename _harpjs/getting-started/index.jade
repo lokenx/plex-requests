@@ -1,0 +1,43 @@
+article
+  h1 Getting Started
+  p Plex Requests is relatively straight forward to get installed. It has a single requirement, and there are instructions for the Mac, Windows, and Linux. In addition there are some configuration details available, including running the application on start-up. If there are any issues you would like to improve the docs please open a pull request over on GitHub!
+
+  h2(id="requirements") Requirements
+  p Plex Requests is built upon #[a(href="hapijs.com") Hapi]. It's a Node platform akin to ExpressJS that is great for creating robust applications. The only requirement is #[a(href="https://nodejs.org") Node] which runs on Windows, Mac OS X, and Linux.
+
+  p The application requires at least v4 of Node due to a few dependencies. It has also been tested with v5 if you want to be on the cutting edge. You can download Node from their #[a(href="https://nodejs.org/en/download/") downloads page] if you don't have it already installed.
+
+  h2(id="installation") Installation
+  h3 Mac OS X
+  p Installation is fairly straightforward. You can get the app one of two ways: using Git, or download release specific archive. Releases can be found on GitHub on the #[a(href="https://github.com/lokenx/plex-requests/releases") releases page]. If you plan on using Git and you don't have it installed head over #[a(href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git") there] for instructions.
+
+  p Once git is installed, simply open up a terminal window and navigate to where you'd like to install Plex Requests. The below command will get you a fresh and up to date version of the app.
+
+  pre
+    code.bash.
+      git clone https://github.com/lokenx/plex-requests.git
+
+  p Once that is done, open up the newly created folder and tell NPM to install everything you need. If your terminal says something about NPM being an unrecognized command, make sure you have installed Node as mentioned up top.
+
+  pre
+    code.bash.
+      cd plex-requests
+      npm install
+
+  p After a few minutes of npm installing things you are good to go! Simply type the below command to start things up. Things should now be accessible at #[a(href="http://localhost:8000") localhost:8000].
+
+  pre
+    code.bash.
+      npm start
+
+  h3 Windows 7
+  p Coming soon
+
+  h3 Windows 8/10
+  p Coming soon
+
+  h3 Linux
+  p Coming soon
+
+  h2(id="configuration") Configuration
+  p Coming soon

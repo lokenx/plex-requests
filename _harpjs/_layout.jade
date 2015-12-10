@@ -1,0 +1,22 @@
+doctype
+html
+  head
+    title Plex Requests
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel="stylesheet" href="/css/main.css")
+    link(rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons")
+    link(rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/solarized_light.min.css")
+  body
+  
+    != partial("_partials/_navigation.jade")
+
+    .container
+      != yield
+
+    != partial("_partials/_footer.jade")
+    
+    script(src="//code.jquery.com/jquery-1.11.3.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js")
+    script hljs.initHighlightingOnLoad();
+    script
+      include js/script.js

@@ -1,0 +1,62 @@
+main {
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  h1 {
+    margin-top: 0.5em;
+  }
+  h2 {
+    margin-top: 2em;
+  }
+
+  blockquote {
+    text-align: center;
+    margin-top: 0.5em;
+    color: lighten($base-font-color, 40);
+  }
+
+  .features-list {
+    @include span-columns(4);
+    @include omega(3n);
+
+    @include media($large-screen-down) {
+      @include span-columns(2);
+      // @include omega(3n);
+    }
+
+    .features-icons {
+      @include span-columns(2);
+      text-align: center;
+      color: $primary-color;
+    }
+
+    .features-text {
+      @include span-columns(10);
+    }
+  }
+
+  .content-block {
+    @include row(table);
+    @include pad(0 0 3em);
+
+    @include media($large-screen) {
+      width: 70%;
+      margin: auto;
+      h2 {
+        padding-bottom: 0.5em;
+      }
+    }
+
+  }
+
+  @include media($medium-screen-up) {
+    h1 {
+      font-size: 4em;
+    }
+
+    width: 80%;
+    margin: auto;
+  }
+}

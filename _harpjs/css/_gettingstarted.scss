@@ -1,0 +1,13 @@
+article {
+  @include row();
+  @include span-columns(10);
+  @include shift(1);
+
+  h1, h2 {
+    padding-top: 1.5em;
+  }
+
+  h3 {
+    padding-top: 1em;
+  }
+}

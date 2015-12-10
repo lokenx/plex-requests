@@ -7,6 +7,7 @@
     "bcryptjs": "^2.3.0",
     "boom": "^3.0.0",
     "confidence": "^1.4.2",
+    "fs-extra": "^0.26.2",
     "glue": "^2.4.0",
     "good": "^6.4.0",
     "good-console": "^5.2.0",

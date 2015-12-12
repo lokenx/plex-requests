@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "dependencies": {
+    "async": "^1.5.0",
     "bcryptjs": "^2.3.0",
     "boom": "^3.0.0",
     "confidence": "^1.4.2",

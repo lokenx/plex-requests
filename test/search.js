@@ -226,9 +226,8 @@ describe('/search', () => {
                 token: 'abcd1234'
             });
 
-        Init((err, token) => {
+        Init().then((token) => {
 
-            expect(err).to.not.exist();
             expect(token).to.be.an.string();
 
             Nock.cleanAll();
@@ -242,10 +241,9 @@ describe('/search', () => {
             .post('/login')
             .replyWithError('Something fake awful happened');
 
-        Init((err, token) => {
+        Init().catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();

@@ -26,18 +26,20 @@
   "devDependencies": {
     "code": "^2.0.1",
     "codecov": "^1.0.1",
+    "cross-env": "^1.0.5",
     "eslint-config-hapi": "^8.0.0",
     "eslint-plugin-hapi": "^4.0.0",
     "lab": "^7.3.0",
     "nock": "^3.3.2",
     "nodemon": "^1.8.1",
+    "opn-cli": "^1.0.0",
     "rewire": "^2.5.1",
     "shot": "^2.0.1"
   },
   "scripts": {
-    "start": "node_modules/.bin/nodemon lib/start.js",
-    "test": "node node_modules/lab/bin/lab -a code -t 90 -L -v",
-    "coverage": "node node_modules/lab/bin/lab -a code -r html -L -o coverage/coverage.html -r lcov -o coverage/lcov.info",
+    "start": "nodemon lib/start.js",
+    "test": "lab -a code -t 90 -L -v",
+    "coverage": "cross-env lab -a code -r html -L -o coverage/coverage.html -r lcov -o coverage/lcov.info && opn coverage/coverage.html --no-wait",
     "codecov": "codecov"
   },
   "keywords": [],

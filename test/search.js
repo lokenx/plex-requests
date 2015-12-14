@@ -95,7 +95,7 @@ describe('/search', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result.results).to.be.an.array();
+                expect(res.result.data).to.be.an.array();
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -129,7 +129,7 @@ describe('/search', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result).to.be.an.array();
+                expect(res.result.data).to.be.an.array();
 
                 Nock.cleanAll();
                 server.stop(done);

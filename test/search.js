@@ -263,6 +263,9 @@ describe('/search', () => {
 });
 
 internals.manifest = {
+    server: {
+        debug: false
+    },
     connections: [
         {
             host: 'localhost',

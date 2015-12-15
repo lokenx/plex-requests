@@ -182,7 +182,7 @@ describe('/search', () => {
 
             server.inject(options, (res) => {
 
-                expect(res.statusCode).to.equal(400);
+                expect(res.statusCode).to.equal(500);
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -210,7 +210,7 @@ describe('/search', () => {
 
             server.inject(options, (res) => {
 
-                expect(res.statusCode).to.equal(400);
+                expect(res.statusCode).to.equal(500);
 
                 Nock.cleanAll();
                 server.stop(done);

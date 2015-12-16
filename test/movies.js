@@ -5,11 +5,7 @@ const Lab = require('lab');
 const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
-const Users = require('../lib/plugins/authentication/users').module;
-const Rewire = require('rewire');
-
-const Search = Rewire('../lib/plugins/search/search');
-const Init = Search.__get__('init');
+const Helpers = require('../lib/plugins/authentication/helpers');
 
 const internals = {};
 
@@ -18,9 +14,9 @@ const describe = lab.experiment;
 const expect = Code.expect;
 const it = lab.test;
 const before = lab.before;
-const after = lab.after;
+// const after = lab.after;
 
-describe('/search', () => {
+describe('/movies', () => {
 
     before((done) => {
 
@@ -68,25 +64,50 @@ describe('/search', () => {
         });
     });
 
+    it('adds new movies', (done) => {
+
+        const options = {
+            url: '/api/v1/movies',
+            method: 'POST',
+            headers: {
+                Authorization: internals.token
+            },
+            payload: {
+                'title': 'TestMovie',
+                'tmdb': '01234567890',
+                'imdb': 'tt01234567890',
+                'released': 'Thu Nov 26 2010 21:34:39 GMT-0500 (EST)',
+                'user': 'admin',
+                'downloaded': false,
+                'approved': true,
+                'poster_path': '/'
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.object();
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('returns array of movies', (done) => {
 
         const options = {
-            url: '/api/v1/search/movie&query=the',
+            url: '/api/v1/movies/0',
             method: 'GET',
             headers: {
                 Authorization: internals.token
             }
         };
-
-        Nock('https://api.themoviedb.org')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .reply(200, {
-                results: [
-                    { movie: 1 },
-                    { movie: 2 }
-                ]
-            });
 
         App.init(internals.manifest, internals.composeOptions, (err, server) => {
 
@@ -95,7 +116,7 @@ describe('/search', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result.data).to.be.an.array();
+                expect(res.result).to.be.an.array();
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -103,24 +124,29 @@ describe('/search', () => {
         });
     });
 
-    it('returns array of tv shows', (done) => {
+    it('updates existing movies', (done) => {
 
         const options = {
-            url: '/api/v1/search/tv&query=the',
-            method: 'GET',
+            url: '/api/v1/movies',
+            method: 'PUT',
             headers: {
                 Authorization: internals.token
+            },
+            payload: {
+                'imdb': 'tt01234567890',
+                'update': {
+                    'downloaded': false
+                }
             }
         };
 
-        Nock('https://api-beta.thetvdb.com')
-            .get('/search/series?name=the')
-            .reply(200, {
-                data: [
-                    { tv: 1 },
-                    { tv: 2 }
-                ]
+        Helpers.isAdmin = (username) => {
+
+            return new Promise((resolve, reject) => {
+
+                return resolve(true);
             });
+        };
 
         App.init(internals.manifest, internals.composeOptions, (err, server) => {
 
@@ -129,7 +155,7 @@ describe('/search', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result.data).to.be.an.array();
+                expect(res.result).to.be.an.object();
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -137,13 +163,16 @@ describe('/search', () => {
         });
     });
 
-    it('searches for incorrect media type', (done) => {
+    it('removes a movies', (done) => {
 
         const options = {
-            url: '/api/v1/search/sports&query=the',
-            method: 'GET',
+            url: '/api/v1/movies',
+            method: 'DELETE',
             headers: {
                 Authorization: internals.token
+            },
+            payload: {
+                'imdb': 'tt01234567890'
             }
         };
 
@@ -153,36 +182,8 @@ describe('/search', () => {
 
             server.inject(options, (res) => {
 
-                expect(res.statusCode).to.equal(400);
-
-                server.stop(done);
-            });
-        });
-    });
-
-    it('returns error without API key for movie searches', (done) => {
-
-        const options = {
-            url: '/api/v1/search/movie&query=the',
-            method: 'GET',
-            headers: {
-                Authorization: internals.token
-            }
-        };
-
-        Nock('https://api.themoviedb.org')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .replyWithError('Something fake awful happened');
-
-
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
-
-            expect(err).to.not.exist();
-
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(500);
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.object();
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -190,82 +191,9 @@ describe('/search', () => {
         });
     });
 
-    it('returns error with tv show search', (done) => {
-
-        const options = {
-            url: '/api/v1/search/tv&query=the',
-            method: 'GET',
-            headers: {
-                Authorization: internals.token
-            }
-        };
-
-        Nock('https://api-beta.thetvdb.com')
-            .get('/search/series?name=the')
-            .replyWithError('Something fake awful happened');
-
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
-
-            expect(err).to.not.exist();
-
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(500);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
-        });
-    });
-
-    it('returns TVDB token', (done) => {
-
-        Nock('https://api-beta.thetvdb.com')
-            .post('/login')
-            .reply(200, {
-                token: 'abcd1234'
-            });
-
-        Init().then((token) => {
-
-            expect(token).to.be.an.string();
-
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    it('returns error getting TVDB token', (done) => {
-
-        Nock('https://api-beta.thetvdb.com')
-            .post('/login')
-            .replyWithError('Something fake awful happened');
-
-        Init().catch((err) => {
-
-            expect(err).to.exist();
-
-            Nock.cleanAll();
-            done();
-        });
-    });
-
-    after((done) => {
-
-        Users.remove({ username: 'test1' }, (err, doc) => {
-
-            if (err) {
-                throw new Error(err.message);
-            }
-            done();
-        });
-    });
 });
 
 internals.manifest = {
-    server: {
-        debug: false
-    },
     connections: [
         {
             host: 'localhost',
@@ -275,7 +203,7 @@ internals.manifest = {
     plugins: {
         'hapi-auth-jwt2': {},
         './plugins/authentication': {},
-        './plugins/search': {}
+        './plugins/movies': {}
     }
 };
 

@@ -124,6 +124,45 @@ describe('/movies', () => {
         });
     });
 
+    it('updates existing movies', (done) => {
+
+        const options = {
+            url: '/api/v1/movies',
+            method: 'PUT',
+            headers: {
+                Authorization: internals.token
+            },
+            payload: {
+                'imdb': 'tt01234567890',
+                'update': {
+                    'downloaded': false
+                }
+            }
+        };
+
+        Helpers.isAdmin = (username) => {
+
+            return new Promise((resolve, reject) => {
+
+                return resolve(true);
+            });
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.object();
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('removes a movies', (done) => {
 
         const options = {
@@ -135,14 +174,6 @@ describe('/movies', () => {
             payload: {
                 'imdb': 'tt01234567890'
             }
-        };
-
-        Helpers.isAdmin = (username) => {
-
-            return new Promise((resolve, reject) => {
-
-                return resolve(true);
-            });
         };
 
         App.init(internals.manifest, internals.composeOptions, (err, server) => {

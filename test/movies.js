@@ -64,6 +64,30 @@ describe('/movies', () => {
         });
     });
 
+    it('returns error due to no movies', (done) => {
+
+        const options = {
+            url: '/api/v1/movies/0',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(404);
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('adds new movies', (done) => {
 
         const options = {
@@ -163,6 +187,36 @@ describe('/movies', () => {
         });
     });
 
+    it('returns error updating movie', (done) => {
+
+        const options = {
+            url: '/api/v1/movies',
+            method: 'PUT',
+            headers: {
+                Authorization: internals.token
+            },
+            payload: {
+                'imdb': 'tt',
+                'update': {
+                    'downloaded': false
+                }
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(403);
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
     it('removes a movies', (done) => {
 
         const options = {
@@ -184,6 +238,33 @@ describe('/movies', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
+    it('returns error removing non-existent movie', (done) => {
+
+        const options = {
+            url: '/api/v1/movies',
+            method: 'DELETE',
+            headers: {
+                Authorization: internals.token
+            },
+            payload: {
+                'imdb': 'tt01234567890'
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(403);
 
                 Nock.cleanAll();
                 server.stop(done);

@@ -67,7 +67,7 @@ describe('/movies', () => {
     it('returns error due to no movies', (done) => {
 
         const options = {
-            url: '/api/v1/movies/0',
+            url: '/api/v1/movies?page=1',
             method: 'GET',
             headers: {
                 Authorization: internals.token
@@ -126,7 +126,7 @@ describe('/movies', () => {
     it('returns array of movies', (done) => {
 
         const options = {
-            url: '/api/v1/movies/0',
+            url: '/api/v1/movies?page=1',
             method: 'GET',
             headers: {
                 Authorization: internals.token

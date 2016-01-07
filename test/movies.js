@@ -55,7 +55,7 @@ describe('/movies', () => {
 
             server.inject(options, (res) => {
 
-                internals.token = res.result.token;
+                internals.token = res.result.data.token;
                 expect(res.statusCode).to.equal(200);
 
                 Nock.cleanAll();

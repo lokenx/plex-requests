@@ -6,10 +6,7 @@ const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
 const Users = require('../lib/plugins/authentication/users').module;
-const Rewire = require('rewire');
-
-const Search = Rewire('../lib/plugins/search/search');
-const Init = Search.__get__('init');
+const TVDB = require('../lib/plugins/search/tvdb');
 
 const internals = {};
 
@@ -226,9 +223,10 @@ describe('/search', () => {
                 token: 'abcd1234'
             });
 
-        Init().then((token) => {
+        TVDB.getToken((err, token) => {
 
-            expect(token).to.be.an.string();
+            expect(err).to.not.exist();
+            expect(token).to.be.a.string();
 
             Nock.cleanAll();
             done();
@@ -241,9 +239,10 @@ describe('/search', () => {
             .post('/login')
             .replyWithError('Something fake awful happened');
 
-        Init().catch((err) => {
+        TVDB.getToken((err, token) => {
 
             expect(err).to.exist();
+            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();

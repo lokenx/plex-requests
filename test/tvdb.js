@@ -19,10 +19,14 @@ describe('/tvdb', () => {
             .post('/login')
             .replyWithError('Fake error returned');
 
-        TVDB.getToken((err, token) => {
+        TVDB.getToken()
+        .then((token) => {
+
+            console.log(token);
+        })
+        .catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();
@@ -34,13 +38,17 @@ describe('/tvdb', () => {
         Nock('https://api-beta.thetvdb.com')
             .post('/login')
             .reply(400, {
-                Error: 'Fake error returned'
+                errors: { error: 'Fake error returned' }
             });
 
-        TVDB.getToken((err, token) => {
+        TVDB.getToken()
+        .then((token) => {
+
+            console.log(token);
+        })
+        .catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();
@@ -55,13 +63,17 @@ describe('/tvdb', () => {
                 token: 'abcd1234'
             });
 
-        TVDB.refreshToken((err, token) => {
+        TVDB.refreshToken()
+        .then((token) => {
 
-            expect(err).to.not.exist();
-            expect(token).to.be.an.string();
+            expect(token).to.be.a.string();
 
             Nock.cleanAll();
             done();
+        })
+        .catch((err) => {
+
+            console.error(err);
         });
     });
 
@@ -71,35 +83,43 @@ describe('/tvdb', () => {
             .get('/refresh_token')
             .replyWithError('Fake error returned');
 
-        TVDB.refreshToken((err, token) => {
+        TVDB.refreshToken()
+        .then((token) => {
+
+            console.log(token);
+        })
+        .catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();
         });
     });
 
-    it('returns reponse rror when refreshing TVDB token', (done) => {
+    it('returns reponse error when refreshing TVDB token', (done) => {
 
         Nock('https://api-beta.thetvdb.com')
             .get('/refresh_token')
             .reply(400, {
-                Error: 'Fake error returned'
+                errors: { error: 'Fake error returned' }
             });
 
-        TVDB.refreshToken((err, token) => {
+        TVDB.refreshToken()
+        .then((token) => {
+
+            console.log(token);
+        })
+        .catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();
         });
     });
 
-    it('returns reponse rror when searching TVDB', (done) => {
+    it('returns reponse error when searching TVDB', (done) => {
 
         Nock('https://api-beta.thetvdb.com')
             .get('/search/series?name=the')

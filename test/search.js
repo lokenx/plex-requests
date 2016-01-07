@@ -223,13 +223,17 @@ describe('/search', () => {
                 token: 'abcd1234'
             });
 
-        TVDB.getToken((err, token) => {
+        TVDB.getToken()
+        .then((token) => {
 
-            expect(err).to.not.exist();
             expect(token).to.be.a.string();
 
             Nock.cleanAll();
             done();
+        })
+        .catch((err) => {
+
+            console.error(err);
         });
     });
 
@@ -239,10 +243,10 @@ describe('/search', () => {
             .post('/login')
             .replyWithError('Something fake awful happened');
 
-        TVDB.getToken((err, token) => {
+        TVDB.getToken()
+        .catch((err) => {
 
             expect(err).to.exist();
-            expect(token).to.not.exist();
 
             Nock.cleanAll();
             done();

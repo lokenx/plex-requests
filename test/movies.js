@@ -226,7 +226,8 @@ describe('/movies', () => {
                 Authorization: internals.token
             },
             payload: {
-                'imdb': 'tt01234567890'
+                'imdb': 'tt01234567890',
+                'title': 'Demo Removal'
             }
         };
 
@@ -237,7 +238,7 @@ describe('/movies', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result).to.be.an.object();
+                expect(res.result).to.be.a.string();
 
                 Nock.cleanAll();
                 server.stop(done);

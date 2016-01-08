@@ -277,8 +277,8 @@ internals.manifest = {
     ],
     plugins: {
         'hapi-auth-jwt2': {},
-        './plugins/authentication': {},
-        './plugins/search': {}
+        './plugins/authentication': require('../lib/config').path,
+        './plugins/search': require('../lib/config').path
     }
 };
 

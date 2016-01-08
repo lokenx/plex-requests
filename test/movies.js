@@ -284,8 +284,8 @@ internals.manifest = {
     ],
     plugins: {
         'hapi-auth-jwt2': {},
-        './plugins/authentication': {},
-        './plugins/movies': {}
+        './plugins/authentication': require('../lib/config').path,
+        './plugins/movies': require('../lib/config').path
     }
 };
 

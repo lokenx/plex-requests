@@ -140,7 +140,7 @@ describe('/movies', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result).to.be.an.array();
+                expect(res.result.data).to.be.an.array();
 
                 Nock.cleanAll();
                 server.stop(done);
@@ -238,7 +238,7 @@ describe('/movies', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result).to.be.a.string();
+                expect(res.result).to.be.an.object();
 
                 Nock.cleanAll();
                 server.stop(done);

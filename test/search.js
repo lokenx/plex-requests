@@ -75,13 +75,25 @@ describe('/search', () => {
             }
         };
 
-        Nock('https://api.themoviedb.org')
+        Nock('http://www.omdbapi.com/')
             .filteringPath(/.*/, 'query')
             .get('query')
             .reply(200, {
-                results: [
-                    { movie: 1 },
-                    { movie: 2 }
+                'Search': [
+                    {
+                        'Title': 'The Dark Knight',
+                        'Year': '2008',
+                        'imdbID': 'tt0468569',
+                        'Type': 'movie',
+                        'Poster': 'http://ia.media-imdb.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg'
+                    },
+                    {
+                        'Title': 'The Dark Knight Rises',
+                        'Year': '2012',
+                        'imdbID': 'tt1345836',
+                        'Type': 'movie',
+                        'Poster': 'http://ia.media-imdb.com/images/M/MV5BMTk4ODQzNDY3Ml5BMl5BanBnXkFtZTcwODA0NTM4Nw@@._V1_SX300.jpg'
+                    }
                 ]
             });
 
@@ -91,6 +103,7 @@ describe('/search', () => {
 
             server.inject(options, (res) => {
 
+                console.log(res.result);
                 expect(res.statusCode).to.equal(200);
                 expect(res.result.data).to.be.an.array();
 
@@ -152,36 +165,6 @@ describe('/search', () => {
 
                 expect(res.statusCode).to.equal(400);
 
-                server.stop(done);
-            });
-        });
-    });
-
-    it('returns error without API key for movie searches', (done) => {
-
-        const options = {
-            url: '/api/v1/search/movie&query=the',
-            method: 'GET',
-            headers: {
-                Authorization: internals.token
-            }
-        };
-
-        Nock('https://api.themoviedb.org')
-            .filteringPath(/.*/, 'query')
-            .get('query')
-            .replyWithError('Something fake awful happened');
-
-
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
-
-            expect(err).to.not.exist();
-
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(500);
-
-                Nock.cleanAll();
                 server.stop(done);
             });
         });

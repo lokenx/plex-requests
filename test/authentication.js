@@ -78,6 +78,30 @@ describe('/authentication', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
+                internals.token = res.result.data.token;
+
+                server.stop(done);
+            });
+        });
+    });
+
+    it('successfully refresh user token', (done) => {
+
+        const options = {
+            url: '/api/v1/refresh-token',
+            method: 'GET',
+            headers: {
+                Authorization: internals.token
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(200);
 
                 server.stop(done);
             });

@@ -262,7 +262,7 @@ describe('/tv', () => {
                 Authorization: internals.token
             },
             payload: {
-                'tvdb': '01234567890',
+                'tvdb': '01234567890'
             }
         };
 

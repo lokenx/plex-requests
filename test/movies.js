@@ -14,7 +14,6 @@ const describe = lab.experiment;
 const expect = Code.expect;
 const it = lab.test;
 const before = lab.before;
-// const after = lab.after;
 
 describe('/movies', () => {
 
@@ -67,7 +66,7 @@ describe('/movies', () => {
     it('returns error due to no movies', (done) => {
 
         const options = {
-            url: '/api/v1/movies?page=1',
+            url: '/api/v1/movies',
             method: 'GET',
             headers: {
                 Authorization: internals.token
@@ -126,7 +125,7 @@ describe('/movies', () => {
     it('returns array of movies', (done) => {
 
         const options = {
-            url: '/api/v1/movies?page=1',
+            url: '/api/v1/movies',
             method: 'GET',
             headers: {
                 Authorization: internals.token

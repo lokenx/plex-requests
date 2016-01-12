@@ -103,7 +103,6 @@ describe('/search', () => {
 
             server.inject(options, (res) => {
 
-                console.log(res.result);
                 expect(res.statusCode).to.equal(200);
                 expect(res.result.data).to.be.an.array();
 

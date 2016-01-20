@@ -13,8 +13,20 @@ const lab = exports.lab = Lab.script();
 const describe = lab.experiment;
 const expect = Code.expect;
 const it = lab.test;
+const before = lab.before;
+const after = lab.after;
 
 describe('/authentication', () => {
+
+    before((done) => {
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+            internals.server = server;
+            done();
+        });
+    });
 
     it('successfully login and create user with new Plex account', (done) => {
 
@@ -47,17 +59,12 @@ describe('/authentication', () => {
                 user: { username: 'test0' }
             });
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(200);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(200);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -71,17 +78,12 @@ describe('/authentication', () => {
             }
         };
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(200);
+            internals.token = res.result.data.token;
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(200);
-                internals.token = res.result.data.token;
-
-                server.stop(done);
-            });
+            done();
         });
     });
 
@@ -95,16 +97,11 @@ describe('/authentication', () => {
             }
         };
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(200);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(200);
-
-                server.stop(done);
-            });
+            done();
         });
     });
 
@@ -118,21 +115,16 @@ describe('/authentication', () => {
             }
         };
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
+            Users.remove({ username: 'test1' }, (err, doc) => {
 
-                expect(res.statusCode).to.equal(401);
-
-                Users.remove({ username: 'test1' }, (err, doc) => {
-
-                    if (err) {
-                        throw new Error(err.message);
-                    }
-                    server.stop(done);
-                });
+                if (err) {
+                    throw new Error(err.message);
+                }
+                done();
             });
         });
     });
@@ -151,17 +143,12 @@ describe('/authentication', () => {
             .post('/users/sign_in.json')
             .replyWithError('Something fake awful happened');
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -181,17 +168,12 @@ describe('/authentication', () => {
                 error: 'Something fake awful happened'
             });
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -216,17 +198,12 @@ describe('/authentication', () => {
             .get('url')
             .replyWithError('Something fake awful happened');
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -253,17 +230,12 @@ describe('/authentication', () => {
                 errors:  { error: 'Something fake awful happened' }
             });
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -298,17 +270,12 @@ describe('/authentication', () => {
                 errors:  { error: 'Something fake awful happened' }
             });
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -341,17 +308,12 @@ describe('/authentication', () => {
             .get('url')
             .replyWithError('Something fake awful happened');
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -362,17 +324,12 @@ describe('/authentication', () => {
             method: 'POST'
         };
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(400);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(400);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
     });
 
@@ -386,18 +343,18 @@ describe('/authentication', () => {
             }
         };
 
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+        internals.server.inject(options, (res) => {
 
-            expect(err).to.not.exist();
+            expect(res.statusCode).to.equal(401);
 
-            server.inject(options, (res) => {
-
-                expect(res.statusCode).to.equal(401);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            Nock.cleanAll();
+            done();
         });
+    });
+
+    after((done) => {
+
+        internals.server.stop(done);
     });
 });
 

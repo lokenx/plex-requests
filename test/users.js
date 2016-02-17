@@ -25,7 +25,7 @@ describe('/users', () => {
             email: 'user@email.com',
             role: 'admin',
             created: Date.now()
-        },{
+        }, {
             username: 'test2',
             password: 'password',
             email: 'user@email.com',
@@ -69,17 +69,14 @@ describe('/users', () => {
     it('updates existing user as admin', (done) => {
 
         const options = {
-            url: '/api/v1/users',
+            url: '/api/v1/users/test2',
             method: 'PUT',
             credentials: {
                 username: 'test1',
                 password: 'password'
             },
             payload: {
-                'username': 'test1',
-                'update': {
-                    'email': 'updated@email.com'
-                }
+                'email': 'updated@email.com'
             }
         };
 
@@ -89,6 +86,7 @@ describe('/users', () => {
 
             server.inject(options, (res) => {
 
+                console.log(res.result);
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
 
@@ -101,17 +99,14 @@ describe('/users', () => {
     it('updates existing user as user', (done) => {
 
         const options = {
-            url: '/api/v1/users',
+            url: '/api/v1/users/test2',
             method: 'PUT',
             credentials: {
                 username: 'test2',
                 password: 'password'
             },
             payload: {
-                'username': 'test2',
-                'update': {
-                    'email': 'updated@email.com'
-                }
+                'email': 'updated@email.com'
             }
         };
 
@@ -133,17 +128,14 @@ describe('/users', () => {
     it('returns error updating user', (done) => {
 
         const options = {
-            url: '/api/v1/users',
+            url: '/api/v1/users/admin',
             method: 'PUT',
             credentials: {
                 username: 'test2',
                 password: 'password'
             },
             payload: {
-                'username': 'admin',
-                'update': {
-                    'email': 'false@example.com'
-                }
+                'email': 'false@example.com'
             }
         };
 

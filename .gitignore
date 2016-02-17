@@ -4,3 +4,4 @@ coverage
 databases/*.db
 databases_test/*.db
 config/settings.json
+config/testing.settings.json

@@ -3,7 +3,7 @@
 const Code = require('code');
 const Lab = require('lab');
 const Path = require('path');
-const Users = require('../lib/plugins/authentication/users').module;
+const Users = require('../lib/plugins/users/db').module;
 const Nock = require('nock');
 const App = require('../lib');
 
@@ -61,7 +61,6 @@ describe('/authentication', () => {
 
         internals.server.inject(options, (res) => {
 
-            console.log(res.result);
             expect(res.statusCode).to.equal(200);
 
             Nock.cleanAll();
@@ -136,7 +135,7 @@ describe('/authentication', () => {
             url: '/api/v1/login',
             method: 'POST',
             headers: {
-                Authorization: 'Basic dGVzdDI6dGVzdDI='
+                Authorization: 'Basic dGVzdDU6dGVzdDU='
             }
         };
 
@@ -159,7 +158,7 @@ describe('/authentication', () => {
             url: '/api/v1/login',
             method: 'POST',
             headers: {
-                Authorization: 'Basic dGVzdDI6dGVzdDI='
+                Authorization: 'Basic dGVzdDU6dGVzdDU='
             }
         };
 

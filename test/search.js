@@ -5,7 +5,7 @@ const Lab = require('lab');
 const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
-const Users = require('../lib/plugins/authentication/users').module;
+const Users = require('../lib/plugins/users/db').module;
 const TVDB = require('../lib/plugins/search/tvdb');
 
 const internals = {};

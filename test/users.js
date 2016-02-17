@@ -127,7 +127,7 @@ describe('/users', () => {
     it('returns error updating user', (done) => {
 
         const options = {
-            url: '/api/v1/users/admin',
+            url: '/api/v1/users/nouser',
             method: 'PUT',
             credentials: {
                 username: 'testuser',

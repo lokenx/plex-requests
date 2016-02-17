@@ -61,6 +61,7 @@ describe('/authentication', () => {
 
         internals.server.inject(options, (res) => {
 
+            console.log(res.result);
             expect(res.statusCode).to.equal(200);
 
             Nock.cleanAll();

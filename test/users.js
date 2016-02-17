@@ -66,7 +66,7 @@ describe('/users', () => {
         });
     });
 
-    it('updates existing user', (done) => {
+    it('updates existing user as admin', (done) => {
 
         const options = {
             url: '/api/v1/users',
@@ -77,6 +77,38 @@ describe('/users', () => {
             },
             payload: {
                 'username': 'test1',
+                'update': {
+                    'email': 'updated@email.com'
+                }
+            }
+        };
+
+        App.init(internals.manifest, internals.composeOptions, (err, server) => {
+
+            expect(err).to.not.exist();
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.object();
+
+                Nock.cleanAll();
+                server.stop(done);
+            });
+        });
+    });
+
+    it('updates existing user as user', (done) => {
+
+        const options = {
+            url: '/api/v1/users',
+            method: 'PUT',
+            credentials: {
+                username: 'test2',
+                password: 'password'
+            },
+            payload: {
+                'username': 'test2',
                 'update': {
                     'email': 'updated@email.com'
                 }

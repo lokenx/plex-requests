@@ -20,13 +20,13 @@ describe('/users', () => {
     before((done) => {
 
         Users.insert([{
-            username: 'test1',
+            username: 'testadmin',
             password: 'password',
             email: 'user@email.com',
             role: 'admin',
             created: Date.now()
         }, {
-            username: 'test2',
+            username: 'testuser',
             password: 'password',
             email: 'user@email.com',
             role: 'user',
@@ -46,7 +46,7 @@ describe('/users', () => {
             url: '/api/v1/users',
             method: 'GET',
             credentials: {
-                username: 'test1',
+                username: 'testadmin',
                 password: 'password'
             }
         };
@@ -69,10 +69,10 @@ describe('/users', () => {
     it('updates existing user as admin', (done) => {
 
         const options = {
-            url: '/api/v1/users/test2',
+            url: '/api/v1/users/testuser',
             method: 'PUT',
             credentials: {
-                username: 'test1',
+                username: 'testadmin',
                 password: 'password'
             },
             payload: {
@@ -86,7 +86,6 @@ describe('/users', () => {
 
             server.inject(options, (res) => {
 
-                console.log(res.result);
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
 
@@ -99,10 +98,10 @@ describe('/users', () => {
     it('updates existing user as user', (done) => {
 
         const options = {
-            url: '/api/v1/users/test2',
+            url: '/api/v1/users/testuser',
             method: 'PUT',
             credentials: {
-                username: 'test2',
+                username: 'testuser',
                 password: 'password'
             },
             payload: {
@@ -131,7 +130,7 @@ describe('/users', () => {
             url: '/api/v1/users/admin',
             method: 'PUT',
             credentials: {
-                username: 'test2',
+                username: 'testuser',
                 password: 'password'
             },
             payload: {
@@ -159,11 +158,11 @@ describe('/users', () => {
             url: '/api/v1/users',
             method: 'DELETE',
             credentials: {
-                username: 'test1',
+                username: 'testadmin',
                 password: 'password'
             },
             payload: {
-                'username': 'test2'
+                'username': 'testuser'
             }
         };
 
@@ -188,7 +187,7 @@ describe('/users', () => {
             url: '/api/v1/users',
             method: 'DELETE',
             credentials: {
-                username: 'test1',
+                username: 'testadmin',
                 password: 'password'
             },
             payload: {

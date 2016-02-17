@@ -32,7 +32,7 @@
     "eslint-config-hapi": "~8.0.0",
     "eslint-plugin-hapi": "~4.0.0",
     "lab": "~8.0.0",
-    "nock": "~3.3.2",
+    "nock": "~7.2.1",
     "nodemon": "~1.8.1",
     "opn-cli": "~1.0.0",
     "rewire": "~2.5.1",

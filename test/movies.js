@@ -6,6 +6,7 @@ const App = require('../lib');
 const Path = require('path');
 const Nock = require('nock');
 const Helpers = require('../lib/plugins/authentication/helpers');
+const Users = require('../lib/plugins/users/db').module;
 
 const internals = {};
 
@@ -19,47 +20,18 @@ describe('/movies', () => {
 
     before((done) => {
 
-        const options = {
-            url: '/api/v1/login',
-            method: 'POST',
-            headers: {
-                Authorization: 'Basic dGVzdDE6dGVzdDE='
+        Users.insert({
+            username: 'testmovies',
+            password: 'password',
+            email: 'user@email.com',
+            role: 'admin',
+            created: Date.now()
+        }, (err, doc) => {
+
+            if (err) {
+                throw err;
             }
-        };
-
-        Nock('https://plex.tv')
-            .post('/users/sign_in.json')
-            .reply(201, {
-                user: { email: 'test1' }
-            });
-
-        Nock('https://plex.tv/')
-            .filteringPath(/\/pms\/friends\/all\?X-Plex-Token=.*/, 'url')
-            .get('url')
-            .reply(200, {
-                MediaContainer: { User: [{ $: { username: 'test1' } },{ $: { username: 'test2' } },{ $: { username: 'test3' } }]
-                }
-            });
-
-        Nock('https://plex.tv/')
-            .filteringPath(/\/users\/account\?X-Plex-Token=.*/, 'url')
-            .get('url')
-            .reply(200, {
-                user: { username: 'test0' }
-            });
-
-        App.init(internals.manifest, internals.composeOptions, (err, server) => {
-
-            expect(err).to.not.exist();
-
-            server.inject(options, (res) => {
-
-                internals.token = res.result.data.token;
-                expect(res.statusCode).to.equal(200);
-
-                Nock.cleanAll();
-                server.stop(done);
-            });
+            done();
         });
     });
 
@@ -68,8 +40,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'GET',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             }
         };
 
@@ -92,8 +64,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'POST',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             },
             payload: {
                 'title': 'TestMovie',
@@ -127,8 +99,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'GET',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             }
         };
 
@@ -152,8 +124,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'PUT',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             },
             payload: {
                 'imdb': 'tt01234567890',
@@ -191,8 +163,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'PUT',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             },
             payload: {
                 'imdb': 'tt',
@@ -221,8 +193,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'DELETE',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             },
             payload: {
                 'imdb': 'tt01234567890',
@@ -250,8 +222,8 @@ describe('/movies', () => {
         const options = {
             url: '/api/v1/movies',
             method: 'DELETE',
-            headers: {
-                Authorization: internals.token
+            credentials: {
+                username: 'testmovies'
             },
             payload: {
                 'imdb': 'tt01234567890'

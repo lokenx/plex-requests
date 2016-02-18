@@ -155,14 +155,11 @@ describe('/users', () => {
     it('removes a user', (done) => {
 
         const options = {
-            url: '/api/v1/users',
+            url: '/api/v1/users/testuser',
             method: 'DELETE',
             credentials: {
                 username: 'testadmin',
                 password: 'password'
-            },
-            payload: {
-                'username': 'testuser'
             }
         };
 
@@ -184,14 +181,11 @@ describe('/users', () => {
     it('returns error removing non-existent user', (done) => {
 
         const options = {
-            url: '/api/v1/users',
+            url: '/api/v1/users/fakeuser',
             method: 'DELETE',
             credentials: {
                 username: 'testadmin',
                 password: 'password'
-            },
-            payload: {
-                'username': 'test3'
             }
         };
 

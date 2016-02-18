@@ -104,10 +104,10 @@ describe('/settings', () => {
             payload:  {
                 authentication:
                     {
-                        enabled: true,
-                        passwordrequired: false,
-                        plextoken: 'abcd123',
-                        blockedusers: []
+                        'enabled': true,
+                        'passwordrequired': false,
+                        'plextoken': 'abcd123',
+                        'blockedusers': []
                     }
             }
         };

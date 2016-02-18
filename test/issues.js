@@ -102,6 +102,7 @@ describe('/issues', () => {
                 'episode': 2,
                 'created': '2016-01-07T01:06:03.860Z',
                 'number': 23,
+                'related': 'tt123',
                 'resolved': false
             }
         };

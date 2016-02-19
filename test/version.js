@@ -39,9 +39,18 @@ internals.manifest = {
             port: 0
         }
     ],
-    plugins: {
-        './version': {}
-    }
+    registrations: [
+        {
+            plugin: {
+                register: 'hapi-auth-jwt2'
+            }
+        },
+        {
+            plugin: {
+                register: './version'
+            }
+        }
+    ]
 };
 
 internals.composeOptions = {

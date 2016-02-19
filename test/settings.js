@@ -102,13 +102,12 @@ describe('/settings', () => {
                 password: 'password'
             },
             payload:  {
-                authentication:
-                    {
-                        'enabled': true,
-                        'passwordrequired': false,
-                        'plextoken': 'abcd123',
-                        'blockedusers': []
-                    }
+                authentication: {
+                    'enabled': true,
+                    'passwordrequired': false,
+                    'plextoken': 'abcd123',
+                    'blockedusers': []
+                }
             }
         };
 
@@ -136,11 +135,21 @@ internals.manifest = {
             port: 0
         }
     ],
-    plugins: {
-        'hapi-auth-jwt2': {},
-        './plugins/authentication': require('../lib/config').path,
-        './plugins/settings': require('../lib/config').path
-    }
+    registrations: [
+        {
+            plugin: {
+                register: 'hapi-auth-jwt2'
+            }
+        },
+        {
+            plugin: './plugins/authentication',
+            options: require('../lib/config').path
+        },
+        {
+            plugin: './plugins/settings',
+            options: require('../lib/config').path
+        }
+    ]
 };
 
 internals.composeOptions = {

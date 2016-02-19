@@ -261,11 +261,25 @@ internals.manifest = {
             port: 0
         }
     ],
-    plugins: {
-        'hapi-auth-jwt2': {},
-        './plugins/authentication': require('../lib/config').path,
-        './plugins/tv': require('../lib/config').path
-    }
+    registrations: [
+        {
+            plugin: {
+                register: 'hapi-auth-jwt2'
+            }
+        },
+        {
+            plugin: {
+                register: './plugins/authentication'
+            },
+            options: require('../lib/config').path
+        },
+        {
+            plugin: {
+                register: './plugins/tv'
+            },
+            options: require('../lib/config').path
+        }
+    ]
 };
 
 internals.composeOptions = {

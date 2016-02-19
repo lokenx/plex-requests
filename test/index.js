@@ -68,9 +68,13 @@ internals.manifest = {
             port: 0
         }
     ],
-    plugins: {
-        './version': {}
-    }
+    registrations: [
+        {
+            plugin: {
+                register: './version'
+            }
+        }
+    ]
 };
 
 internals.options = {

@@ -17,6 +17,7 @@
     "hapi": "~13.0.0",
     "hapi-auth-jwt2": "~5.4.1",
     "hoek": "~3.0.4",
+    "inert": "^3.2.0",
     "joi": "~8.0.1",
     "jsonwebtoken": "~5.7.0",
     "leveldown": "~1.4.2",

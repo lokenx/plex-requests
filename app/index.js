@@ -3,19 +3,22 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const Hello = React.createClass({
+const routes = require('./routes');
 
-    render() {
+const SearchForm = React.createClass({
 
-        return (
-            <h1>Hello World</h1>
-        );
+    render () {
+
+        return (<h1>Hello, World!</h1>)
     }
 });
 
-console.log('REACT!');
+const NotFound = React.createClass({
 
-ReactDOM.render(
-    <Hello />,
-    document.getElementById('app')
-);
+    render () {
+
+        return (<h1>Not Found!</h1>)
+    }
+});
+
+ReactDOM.render(routes, document.querySelector('#app'));

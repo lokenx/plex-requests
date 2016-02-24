@@ -132,7 +132,8 @@ internals.manifest = {
     connections: [
         {
             host: 'localhost',
-            port: 0
+            port: 0,
+            labels: ['api']
         }
     ],
     registrations: [
@@ -143,11 +144,11 @@ internals.manifest = {
         },
         {
             plugin: './plugins/authentication',
-            options: require('../lib/config').path
+            options: require('../lib/config').api
         },
         {
             plugin: './plugins/settings',
-            options: require('../lib/config').path
+            options: require('../lib/config').api
         }
     ]
 };
